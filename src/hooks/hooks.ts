@@ -10,8 +10,10 @@ import {
   PullRequestResponse,
   PullRequestReviews,
   Repo,
+  Usages,
 } from "../types/types"
 import { PRS_DETAILS, PRS_REVIEWS, REPOS } from "../consts/consts"
+import { getCalculatedScore } from "../utils/utils"
 
 export const useRepos = () => {
   const [repos, setRepos] = useCachedState<Repo[]>(REPOS)
@@ -67,12 +69,6 @@ export const usePrQuery = (query: string) => {
   }, [query])
 
   return { data, isLoading }
-}
-
-export type PrsDetailsKey = {
-  owner: string
-  repo: string
-  pull_number: number
 }
 
 export const usePrs = () => {
@@ -146,4 +142,37 @@ export const usePrs = () => {
     prsReviews,
     isLoading: isMyOpenPrsLoading || isMentionedPrsLoading,
   }
+}
+
+export const useUsageBasedSort = <T extends { id: string | number }>(
+  data: T[],
+  localStorageKey: string
+) => {
+  const { data: usages, set: setUsages } = useLocalStorage<Usages>(
+    "scores-" + localStorageKey
+  )
+
+  const use = (id: string | number) => {
+    setUsages({
+      ...usages,
+      [id]: {
+        lastUsed: new Date(),
+        usageCount: (usages?.[id]?.usageCount || 0) + 1,
+      },
+    })
+  }
+
+  const arrayWithScores = data.map((e: T) => {
+    const usage = (usages || {})[e.id]
+    return {
+      ...e,
+      _calculatedScore: getCalculatedScore(usage),
+    }
+  })
+
+  const sortedByScores = [...(arrayWithScores || [])].sort(
+    (a, b) => b._calculatedScore - a._calculatedScore
+  )
+
+  return { data: sortedByScores, use }
 }

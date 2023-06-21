@@ -5,7 +5,7 @@ export type Usage = {
   lastUsed?: Date
   usageCount?: number
 }
-export type Usages = Record<number, Usage>
+export type Usages = Record<string | number, Usage>
 export type Repo =
   RestEndpointMethodTypes["repos"]["listForAuthenticatedUser"]["response"]["data"][number]
 export type PrDetailsRes = RestEndpointMethodTypes["pulls"]["get"]["response"]
