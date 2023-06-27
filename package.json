@@ -5,6 +5,7 @@
   "description": "Commands to list your GitHub pull requests and repositories.",
   "icon": "github-color-icon.png",
   "author": "chikalaka",
+  "owner": "kodem",
   "categories": [
     "Developer Tools"
   ],
