@@ -76,7 +76,7 @@ export const usePrs = () => {
     "is:pr+author:@me+is:open"
   )
   const { data: mentionedPrs, isLoading: isMentionedPrsLoading } = usePrQuery(
-    "is:pr+mentions:@me+review-requested:@me+is:open"
+    "is:pr+mentions:@me+is:open"
   )
 
   const [prsDetails, setPrsDetails] =
